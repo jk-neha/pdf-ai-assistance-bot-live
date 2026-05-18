@@ -1,15 +1,14 @@
 import streamlit as st
 from groq import Groq
 import PyPDF2
+import os
 
 # ---------------- PAGE CONFIG ----------------
 st.set_page_config(
     page_title="Neha AI PDF Assistant",
-    page_icon="📄",
+    page_icon="💬|pdf",
     layout="wide"
 )
-
-import os
 
 client = Groq(
     api_key=os.getenv("GROQ_API_KEY")
@@ -19,238 +18,307 @@ client = Groq(
 st.markdown("""
 <style>
 
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=Inter:wght@300;400;500&display=swap');
 
 html, body, [class*="css"] {
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Inter', sans-serif;
 }
 
 /* ── Base ── */
 .stApp {
-    background-color: #F5F3EE;
-    color: #1a1a1a;
+    background-color: #0D0D0D;
+    color: #E8E6E0;
 }
 
 /* ── Sidebar ── */
 section[data-testid="stSidebar"] {
-    background-color: #1C1C1E;
-    border-right: none;
+    background-color: #111111;
+    border-right: 1px solid #1E1E1E;
 }
 
 section[data-testid="stSidebar"] * {
-    color: #E8E6E0 !important;
+    color: #C8C6C0 !important;
+}
+
+section[data-testid="stSidebar"] h1 {
+    font-family: 'Syne', sans-serif !important;
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    color: #FFFFFF !important;
+    letter-spacing: -0.01em;
 }
 
 section[data-testid="stSidebar"] .stMarkdown h3 {
-    color: #F5F3EE !important;
-    font-family: 'DM Serif Display', serif !important;
-    font-size: 15px !important;
-    letter-spacing: 0.03em;
-    margin-bottom: 12px !important;
-}
-
-section[data-testid="stSidebar"] hr {
-    border-color: #333335 !important;
+    font-family: 'Syne', sans-serif !important;
+    font-size: 10px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.14em !important;
+    text-transform: uppercase !important;
+    color: #444240 !important;
+    margin-bottom: 14px !important;
 }
 
 section[data-testid="stSidebar"] .stMarkdown p {
-    font-size: 14px !important;
-    line-height: 2 !important;
-    color: #A8A6A0 !important;
+    font-size: 13px !important;
+    line-height: 2.2 !important;
+    color: #7A7876 !important;
 }
 
-/* Sidebar brand */
-section[data-testid="stSidebar"] h1 {
-    font-family: 'DM Serif Display', serif !important;
-    font-size: 22px !important;
-    color: #F5F3EE !important;
-    letter-spacing: -0.02em;
+section[data-testid="stSidebar"] hr {
+    border-color: #1E1E1E !important;
+    margin: 20px 0 !important;
 }
 
-/* ── Hero Title ── */
+section[data-testid="stSidebar"] .stCaption p {
+    color: #333130 !important;
+    font-size: 11px !important;
+}
+
+/* ── Main title ── */
 .main-title {
-    font-family: 'DM Serif Display', serif;
+    font-family: 'Syne', sans-serif;
     text-align: center;
-    font-size: 56px;
-    font-weight: 400;
-    color: #1C1C1E;
-    margin: 30px 0 6px 0;
-    letter-spacing: -0.03em;
-    line-height: 1.1;
+    font-size: 58px;
+    font-weight: 700;
+    color: #FFFFFF;
+    margin: 36px 0 8px 0;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
 }
 
 .title-accent {
-    color: #C27D4A;
+    color: #7C6AF5;
 }
 
 .sub-title {
     text-align: center;
-    color: #7A7872;
-    font-size: 17px;
+    color: #444240;
+    font-size: 16px;
     font-weight: 300;
-    margin-bottom: 40px;
-    letter-spacing: 0.01em;
-}
-
-/* ── Divider ── */
-.section-divider {
-    height: 1px;
-    background: linear-gradient(to right, transparent, #D4CFC6, transparent);
-    margin: 28px 0;
-}
-
-/* ── Upload Box ── */
-[data-testid="stFileUploader"] {
-    background: #FFFFFF;
-    border: 1.5px dashed #C8C4BC;
-    border-radius: 16px;
-    padding: 30px 24px;
-    transition: border-color 0.2s ease;
-}
-
-[data-testid="stFileUploader"]:hover {
-    border-color: #C27D4A;
-}
-
-[data-testid="stFileUploader"] label {
-    color: #1C1C1E !important;
-    font-size: 16px !important;
-    font-weight: 500 !important;
-}
-
-[data-testid="stFileUploader"] small {
-    color: #9A9690 !important;
-}
-
-/* ── Success / Info Alerts ── */
-[data-testid="stAlert"] {
-    border-radius: 12px !important;
-    border: none !important;
-    font-size: 14px !important;
-}
-
-/* ── Text Input ── */
-.stTextInput input {
-    background-color: #FFFFFF !important;
-    color: #1C1C1E !important;
-    border: 1.5px solid #D4CFC6 !important;
-    border-radius: 12px !important;
-    padding: 14px 16px !important;
-    font-size: 15px !important;
-    font-family: 'DM Sans', sans-serif !important;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
-}
-
-.stTextInput input:focus {
-    border-color: #C27D4A !important;
-    box-shadow: 0 0 0 3px rgba(194, 125, 74, 0.12) !important;
-}
-
-.stTextInput input::placeholder {
-    color: #B0ADA8 !important;
-}
-
-/* ── Buttons ── */
-.stButton > button {
-    width: 100%;
-    background: #1C1C1E;
-    color: #F5F3EE;
-    border: none;
-    border-radius: 12px;
-    padding: 13px 10px;
-    font-size: 13px;
-    font-weight: 500;
-    font-family: 'DM Sans', sans-serif;
-    letter-spacing: 0.01em;
-    transition: background 0.2s ease, transform 0.15s ease;
-    cursor: pointer;
-}
-
-.stButton > button:hover {
-    background: #C27D4A;
-    transform: translateY(-1px);
-}
-
-.stButton > button:active {
-    transform: translateY(0px);
-}
-
-/* Primary ask button — first column */
-div[data-testid="column"]:first-child .stButton > button {
-    background: #C27D4A;
-    font-size: 14px;
-}
-
-div[data-testid="column"]:first-child .stButton > button:hover {
-    background: #A6682F;
-}
-
-/* ── Spinner ── */
-[data-testid="stSpinner"] p {
-    color: #7A7872 !important;
-    font-size: 14px !important;
-}
-
-/* ── Chat Messages ── */
-[data-testid="stChatMessage"] {
-    background: #FFFFFF !important;
-    border: 1px solid #E8E4DC !important;
-    border-radius: 14px !important;
-    padding: 16px !important;
-    margin-bottom: 12px !important;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04) !important;
-}
-
-[data-testid="stChatMessage"] p {
-    font-size: 15px !important;
-    line-height: 1.75 !important;
-    color: #1C1C1E !important;
-}
-
-/* ── Headings in responses ── */
-.stMarkdown h2 {
-    font-family: 'DM Serif Display', serif;
-    font-size: 22px;
-    font-weight: 400;
-    color: #1C1C1E;
-    margin-top: 10px;
-    letter-spacing: -0.02em;
-}
-
-/* ── Caption / Footer ── */
-.footer {
-    text-align: center;
-    margin-top: 70px;
-    margin-bottom: 30px;
-    color: #B0ADA8;
-    font-size: 13px;
-    letter-spacing: 0.02em;
-}
-
-/* ── Sidebar caption ── */
-section[data-testid="stSidebar"] .stCaption p {
-    color: #5A5856 !important;
-    font-size: 12px !important;
+    margin-bottom: 32px;
 }
 
 /* ── Badge strip ── */
 .badge-strip {
     display: flex;
     justify-content: center;
-    gap: 10px;
+    gap: 8px;
     flex-wrap: wrap;
-    margin-bottom: 36px;
+    margin-bottom: 40px;
 }
 
 .badge {
-    background: #FFFFFF;
-    border: 1px solid #DDD9D2;
+    background: #161616;
+    border: 1px solid #2A2A2A;
     border-radius: 30px;
-    padding: 6px 14px;
-    font-size: 13px;
-    color: #5A5856;
-    font-weight: 400;
+    padding: 5px 14px;
+    font-size: 12px;
+    color: #7C6AF5;
+    font-weight: 500;
 }
+
+/* ── Divider ── */
+.section-divider {
+    height: 1px;
+    background: #1E1E1E;
+    margin: 28px 0;
+}
+
+/* ── Upload Box ── */
+[data-testid="stFileUploader"] {
+    background: #111111 !important;
+    border: 1.5px dashed #2A2A2A !important;
+    border-radius: 16px !important;
+    padding: 28px 22px !important;
+}
+
+[data-testid="stFileUploader"] label,
+[data-testid="stFileUploader"] p {
+    color: #E8E6E0 !important;
+    font-size: 15px !important;
+    font-weight: 500 !important;
+}
+
+[data-testid="stFileUploader"] small,
+[data-testid="stFileUploader"] span {
+    color: #444240 !important;
+}
+
+/* Upload "Browse files" button */
+[data-testid="stFileUploaderDropzone"] button,
+[data-testid="stBaseButton-secondary"] {
+    background: #1E1E1E !important;
+    color: #E8E6E0 !important;
+    border: 1px solid #3A3A3A !important;
+    border-radius: 8px !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 13px !important;
+}
+
+[data-testid="stFileUploaderDropzone"] button:hover,
+[data-testid="stBaseButton-secondary"]:hover {
+    background: #7C6AF5 !important;
+    border-color: #7C6AF5 !important;
+    color: #FFFFFF !important;
+}
+
+/* ── Alerts ── */
+[data-testid="stAlert"] {
+    background: #0F1A14 !important;
+    border: 1px solid #1E3A28 !important;
+    border-radius: 12px !important;
+    font-size: 14px !important;
+}
+
+[data-testid="stAlert"] p {
+    color: #6EE89A !important;
+}
+
+/* ── Text Input ── */
+.stTextInput > label {
+    color: #5A5856 !important;
+    font-size: 11px !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.10em !important;
+    text-transform: uppercase !important;
+}
+
+.stTextInput input {
+    background-color: #111111 !important;
+    color: #FFFFFF !important;
+    border: 1.5px solid #2A2A2A !important;
+    border-radius: 12px !important;
+    padding: 14px 16px !important;
+    font-size: 15px !important;
+    font-family: 'Inter', sans-serif !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+    caret-color: #7C6AF5 !important;
+}
+
+.stTextInput input:focus {
+    border-color: #7C6AF5 !important;
+    box-shadow: 0 0 0 3px rgba(124, 106, 245, 0.15) !important;
+}
+
+.stTextInput input::placeholder {
+    color: #2E2C2A !important;
+}
+
+/* ── Action Buttons ── */
+.stButton > button {
+    width: 100%;
+    background: #161616 !important;
+    color: #C8C6C0 !important;
+    border: 1px solid #2A2A2A !important;
+    border-radius: 10px !important;
+    padding: 12px 8px !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    font-family: 'Inter', sans-serif !important;
+    letter-spacing: 0.01em;
+    transition: all 0.18s ease !important;
+    cursor: pointer !important;
+}
+
+.stButton > button:hover {
+    background: #7C6AF5 !important;
+    border-color: #7C6AF5 !important;
+    color: #FFFFFF !important;
+    transform: translateY(-1px) !important;
+}
+
+.stButton > button:active {
+    transform: translateY(0) !important;
+}
+
+/* Primary "Ask AI" — first column */
+div[data-testid="column"]:first-child .stButton > button {
+    background: #7C6AF5 !important;
+    border-color: #7C6AF5 !important;
+    color: #FFFFFF !important;
+    font-weight: 600 !important;
+}
+
+div[data-testid="column"]:first-child .stButton > button:hover {
+    background: #6354D4 !important;
+    border-color: #6354D4 !important;
+}
+
+/* ── Spinner ── */
+[data-testid="stSpinner"] p {
+    color: #444240 !important;
+    font-size: 14px !important;
+}
+
+/* ── Chat Messages ── */
+[data-testid="stChatMessage"] {
+    background: #111111 !important;
+    border: 1px solid #1E1E1E !important;
+    border-radius: 14px !important;
+    padding: 18px 20px !important;
+    margin-bottom: 10px !important;
+}
+
+[data-testid="stChatMessage"] p,
+[data-testid="stChatMessage"] li {
+    color: #C8C6C0 !important;
+    font-size: 15px !important;
+    line-height: 1.8 !important;
+}
+
+[data-testid="stChatMessage"] strong {
+    color: #FFFFFF !important;
+}
+
+[data-testid="stChatMessage"] code {
+    background: #1A1A1A !important;
+    color: #A8FFC4 !important;
+    border-radius: 4px !important;
+    padding: 2px 6px !important;
+    font-size: 13px !important;
+}
+
+/* ── Markdown outside chat ── */
+.stMarkdown p,
+.stMarkdown li {
+    color: #8A8880 !important;
+    font-size: 15px !important;
+    line-height: 1.8 !important;
+}
+
+.stMarkdown h2 {
+    font-family: 'Syne', sans-serif !important;
+    font-size: 20px !important;
+    font-weight: 600 !important;
+    color: #FFFFFF !important;
+    letter-spacing: -0.02em !important;
+    border-bottom: 1px solid #1E1E1E !important;
+    padding-bottom: 8px !important;
+    margin-top: 12px !important;
+}
+
+.stMarkdown h3 {
+    color: #C8C6C0 !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+}
+
+/* ── Footer ── */
+.footer {
+    text-align: center;
+    margin-top: 70px;
+    margin-bottom: 30px;
+    color: #222220;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: #0D0D0D; }
+::-webkit-scrollbar-thumb { background: #222220; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #7C6AF5; }
 
 </style>
 """, unsafe_allow_html=True)
