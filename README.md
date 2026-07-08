@@ -40,10 +40,18 @@
 
 ---
 
+## 🎯 Problem Statement
+
+Reading lengthy PDFs such as research papers, resumes, reports, and technical documentation can be time-consuming. Traditional PDF readers allow users to search text but cannot understand or explain document content.
+
+This project solves that problem by enabling users to interact with PDF documents using natural language through a Large Language Model (LLM).
+
+---
+
 ## 🌍 Overview
 
 **AI PDF Intelligence Bot** is a full-featured document analysis tool that combines PDF parsing with the speed of the **Groq inference API** and the intelligence of **LLaMA 3.1** to deliver instant, accurate answers from any uploaded document.
-
+The modern dark-themed interface was designed with assistance from Claude AI, while the application logic and implementation were developed in Python using Streamlit.
 Whether you're a student researching a paper, a job seeker analyzing your resume, or a professional summarizing a report — this tool turns static PDFs into interactive, queryable knowledge.
 
 ---
@@ -67,12 +75,23 @@ Whether you're a student researching a paper, a job seeker analyzing your resume
 | Category | Tools / Libraries |
 |:---|:---|
 | Language | Python 3.10 |
-| Frontend | Streamlit |
+| UI Design | Claude AI (UI/UX assistance) |
+| Frontend | Streamlit + Custom CSS |
 | AI / LLM | Groq API · LLaMA 3.1 8B Instant |
 | PDF Processing | PyPDF2 |
 | Styling | Custom CSS · Google Fonts (Syne, Inter) |
 | Deployment | Render |
 | Environment | python-dotenv |
+
+--- 
+
+## 🤖 AI Technologies
+
+- Generative AI
+- Large Language Models (LLMs)
+- Natural Language Processing (NLP)
+- Prompt Engineering
+- AI-powered Document Intelligence
 
 ---
 
@@ -99,6 +118,36 @@ pdf-ai-assistance-bot-live/
 
 ---
 
+## 𓂃✍︎ Architecture
+
+                User
+                  │
+                  ▼
+          Streamlit Interface
+                  │
+                  ▼
+             Upload PDF
+                  │
+                  ▼
+        PyPDF2 Text Extraction
+                  │
+                  ▼
+         Prompt Engineering
+                  │
+                  ▼
+              Groq API
+                  │
+                  ▼
+       Llama 3.1 8B Instant
+                  │
+                  ▼
+          AI Generated Response
+                  │
+                  ▼
+            Streamlit Output
+
+ ---
+
 ## ⚙️ How It Works
 
 ```
@@ -119,7 +168,7 @@ STEP 4 — PROMPT
 
 STEP 5 — INFER
   The prompt is sent to Groq's API running LLaMA 3.1 8B Instant —
-  one of the fastest inference engines available.
+  leveraging Groq's high-speed LPU inference for low-latency responses.
 
 STEP 6 — RESPOND
   The AI response is rendered in a clean chat-style interface
@@ -128,10 +177,30 @@ STEP 6 — RESPOND
 
 ---
 
+## 📝 Applications
+
+• Resume Screening
+
+• Research Paper Analysis
+
+• Technical Documentation
+
+• Student Learning
+
+• Interview Preparation
+
+• Business Reports
+
+• Legal Documents
+
+• Academic Projects
+
+---
+
 ## 🧩 App Modes
 
 ### 💬 Ask AI
-Type any question about the document — the model answers **only** from the PDF content, ensuring grounded, hallucination-free responses.
+The model is instructed through prompt engineering to answer based on the uploaded PDF content, improving response relevance and reducing unsupported answers
 
 ### 📝 Summarize
 Generates a clear, professional summary of the entire document — ideal for quickly understanding long reports, papers, or contracts.
